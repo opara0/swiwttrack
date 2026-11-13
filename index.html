@@ -472,8 +472,10 @@
         lucide.createIcons();
 
         // ==========================================
-        // 0. TRACKING SEARCH FLOW (ANY TRACKING ID -> SHIPMENT DETAILS)
+        // 0. TRACKING SEARCH FLOW
         // ==========================================
+        const authorizedTrackingId = '1ST09936541868';
+
         function handleTrackSubmit(event) {
             event.preventDefault();
             const input = document.getElementById('hero-tracking-input');
@@ -483,7 +485,13 @@
                 showToast('Please enter a tracking number');
                 return;
             }
-            launchTrackingDetails(rawCode.toUpperCase());
+            const trackingCode = rawCode.toUpperCase();
+            if (trackingCode !== authorizedTrackingId) {
+                showToast('Invalid tracking code');
+                input.select();
+                return;
+            }
+            launchTrackingDetails(trackingCode);
         }
 
         function launchTrackingDetails(trackingCode) {
