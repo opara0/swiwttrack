@@ -302,7 +302,7 @@
 
             <!-- 4. Full-Width Live Interactive Map Section -->
             <section class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col">
-                <div class="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
+                <div class="p-5 sm:p-6 border-b border-slate-100">
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-xl bg-orange-50 text-[#E63917] flex items-center justify-center">
                             <i data-lucide="map-pin" class="w-4 h-4"></i>
@@ -313,18 +313,6 @@
                         </div>
                     </div>
 
-                    <!-- Zoom & Center Controls -->
-                    <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
-                        <button onclick="zoomMap(0.15)" title="Zoom In" class="p-1.5 rounded-lg bg-white text-slate-700 hover:text-[#E63917] shadow-2xs transition">
-                            <i data-lucide="plus" class="w-4 h-4"></i>
-                        </button>
-                        <button onclick="zoomMap(-0.15)" title="Zoom Out" class="p-1.5 rounded-lg bg-white text-slate-700 hover:text-[#E63917] shadow-2xs transition">
-                            <i data-lucide="minus" class="w-4 h-4"></i>
-                        </button>
-                        <button onclick="resetMapZoom()" title="Reset View" class="p-1.5 rounded-lg bg-white text-slate-700 hover:text-[#E63917] shadow-2xs transition">
-                            <i data-lucide="maximize-2" class="w-4 h-4"></i>
-                        </button>
-                    </div>
                 </div>
 
                 <!-- Stylized Vector Map Canvas for Gatesville, TX 76528 -->
@@ -409,15 +397,6 @@
                         </g>
                     </svg>
 
-                    <!-- Floating Top-Left Distance Badge -->
-                    <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl px-3.5 py-2 shadow-sm flex items-center gap-2.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                        <div class="text-xs">
-                            <span class="text-slate-500">Distance away:</span>
-                            <span id="distance-away" class="font-bold text-slate-900 ml-1">3.1 mi (9 mins)</span>
-                        </div>
-                    </div>
-
                 </div>
             </section>
 
@@ -426,27 +405,15 @@
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <h2 class="font-display text-lg font-bold text-slate-900">Package Contents</h2>
-                        <p class="text-sm text-slate-500">4 items in this shipment</p>
+                        <p class="text-sm text-slate-500">3 items in this shipment</p>
                     </div>
-                    <span class="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg">4 Items</span>
+                    <span class="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg">3 Items</span>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-600 text-white flex items-center justify-center shrink-0">
-                            <i data-lucide="coins" class="w-5 h-5"></i>
-                        </div>
+                        <img src="https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&amp;fit=crop&amp;w=160&amp;h=160&amp;q=80" alt="Gold bar" loading="lazy" class="w-12 h-12 rounded-xl object-cover shrink-0">
                         <div>
                             <p class="text-sm font-bold text-slate-900">Gold bar</p>
-                            <p class="text-xs text-amber-800 font-medium mt-0.5">24K Assay-Certified</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                        <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
-                            <i data-lucide="image" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-slate-900">Photo</p>
-                            <p class="text-xs text-slate-500 mt-0.5">Archival Sleeve</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
@@ -455,16 +422,12 @@
                         </div>
                         <div>
                             <p class="text-sm font-bold text-slate-900">Envelope</p>
-                            <p class="text-xs text-slate-500 mt-0.5">Wax-Sealed Letter</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-rose-50/60 border border-rose-200/80">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shrink-0">
-                            <i data-lucide="gem" class="w-5 h-5"></i>
-                        </div>
+                        <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&amp;fit=crop&amp;w=160&amp;h=160&amp;q=80" alt="Diamond ring" loading="lazy" class="w-12 h-12 rounded-xl object-cover shrink-0">
                         <div>
                             <p class="text-sm font-bold text-slate-900">Diamond ring</p>
-                            <p class="text-xs text-rose-700 font-medium mt-0.5">Velvet Case</p>
                         </div>
                     </div>
                 </div>
@@ -565,7 +528,7 @@
                 id: 2,
                 title: 'Order processed',
                 timestamp: 'Nov 13, 02:15 PM',
-                subtext: '4 items verified & tamper-sealed',
+                subtext: '3 items verified & tamper-sealed',
                 icon: 'box'
             },
             {
@@ -666,20 +629,17 @@
 
             const statusPillText = document.getElementById('status-pill-text');
             const courierMarker = document.getElementById('courier-marker');
-            const distanceAway = document.getElementById('distance-away');
-
             const stageConfigs = {
-                1: { pill: 'Order Confirmed • Manifest Logged', pos: 'translate(130, 225)', dist: '38.4 mi (At Central TX Hub)' },
-                2: { pill: 'Order Processed • 4 Items Sealed', pos: 'translate(130, 225)', dist: '38.4 mi (Awaiting Dispatch)' },
-                3: { pill: 'Package Shipped • US-84 West', pos: 'translate(295, 180)', dist: '19.2 mi (24 mins)' },
-                4: { pill: 'Out for Delivery • Gatesville, TX', pos: 'translate(465, 218)', dist: '3.1 mi (9 mins)' },
-                5: { pill: 'Delivered • Signed by Lilibeth Villamor', pos: 'translate(665, 295)', dist: '0.0 mi (Arrived at 117 Northern Ave)' }
+                1: { pill: 'Order Confirmed • Manifest Logged', pos: 'translate(130, 225)' },
+                2: { pill: 'Order Processed • 3 Items Sealed', pos: 'translate(130, 225)' },
+                3: { pill: 'Package Shipped • US-84 West', pos: 'translate(295, 180)' },
+                4: { pill: 'Out for Delivery • Gatesville, TX', pos: 'translate(465, 218)' },
+                5: { pill: 'Delivered • Signed by Lilibeth Villamor', pos: 'translate(665, 295)' }
             };
 
             const cfg = stageConfigs[stage];
             statusPillText.textContent = cfg.pill;
             courierMarker.setAttribute('transform', cfg.pos);
-            distanceAway.textContent = cfg.dist;
         }
 
         setStage(currentStage);
@@ -722,21 +682,7 @@
         }
 
         // ==========================================
-        // 4. INTERACTIVE MAP ZOOM CONTROLS
-        // ==========================================
-        let currentZoom = 1;
-        function zoomMap(delta) {
-            currentZoom = Math.min(Math.max(currentZoom + delta, 0.85), 1.6);
-            document.getElementById('delivery-map-svg').style.transform = `scale(${currentZoom})`;
-        }
-
-        function resetMapZoom() {
-            currentZoom = 1;
-            document.getElementById('delivery-map-svg').style.transform = `scale(1)`;
-        }
-
-        // ==========================================
-        // 5. NAVIGATION & MODAL HELPERS
+        // 4. NAVIGATION & MODAL HELPERS
         // ==========================================
         function toggleSupportModal() {
             const modal = document.getElementById('support-modal');
