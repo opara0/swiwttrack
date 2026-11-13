@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftTrack — Live Order Delivery Tracking</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Oswald, Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                        condensed: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        cargo: {
+                            sky: '#5E7E9E',
+                            skyDark: '#476685',
+                            orange: '#E63917',
+                            orangeHover: '#CC2E0F',
+                        },
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    },
+                    animation: {
+// ... existing code ... -->
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar & subtle map patterns */
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+        }
+        .map-grid-bg {
+            background-color: #f1f5f9;
+            background-image: 
+                radial-gradient(#cbd5e1 1px, transparent 1px),
+                linear-gradient(to right, rgba(226, 232, 240, 0.6) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(226, 232, 240, 0.6) 1px, transparent 1px);
+            background-size: 24px 24px, 96px 96px, 96px 96px;
+        }
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+        /* Chamfered corner button matching the reference UI */
+        .chamfer-btn {
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+        }
+        .chamfer-search {
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+        }
+        .hero-sky-bg {
+            background: linear-gradient(180deg, #527394 0%, #6B8BA9 48%, #87A3BE 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-orange-100 selection:text-orange-900">
+
+    <!-- Toast Notification (Hidden by default) -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-700/80 backdrop-blur-md">
+            <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <i data-lucide="check" class="w-4 h-4"></i>
+            </div>
+            <span id="toast-message" class="text-sm font-medium">Tracking ID copied to clipboard!</span>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         SECTION A: LANDING HERO VIEW (MATCHING REFERENCE SCREENSHOT)
+         ===================================================================== -->
+    <div id="hero-landing-view" class="min-h-screen flex flex-col hero-sky-bg text-white relative overflow-hidden">
+        <!-- Subtle atmospheric cloud haze -->
+        <div class="absolute inset-0 pointer-events-none opacity-30" style="background: radial-gradient(circle at 20% 25%, rgba(255,255,255,0.45) 0%, transparent 45%), radial-gradient(circle at 80% 35%, rgba(255,255,255,0.35) 0%, transparent 50%);"></div>
+
+        <!-- Top Navigation Bar (Hamburger Left, Geometric X-Logo Center, Chamfered GET IN TOUCH Right) -->
+        <header class="relative z-20 max-w-6xl w-full mx-auto px-5 sm:px-8 pt-6 pb-4 flex items-center justify-between">
+            <!-- Left Hamburger Menu -->
+            <button onclick="toggleNavDrawer()" aria-label="Open Navigation Menu" class="p-2.5 -ml-2.5 rounded-lg text-white/95 hover:text-white hover:bg-white/10 transition">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h12" />
+                </svg>
+            </button>
+
+            <!-- Center Geometric Logistics Emblem -->
+            <a href="#" onclick="event.preventDefault()" class="flex items-center gap-2.5 group" aria-label="SwiftTrack Home">
+                <svg class="w-11 h-11 text-white drop-shadow-sm transition-transform duration-300 group-hover:scale-105" viewBox="0 0 64 48" fill="currentColor">
+                    <path d="M10 6h13l9 13 9-13h13L41 24l13 18H41l-9-13-9 13H10l13-18L10 6z"/>
+                </svg>
+                <span class="font-condensed font-bold text-xl sm:text-2xl tracking-wider uppercase text-white drop-shadow-xs">SwiftTrack</span>
+            </a>
+
+            <!-- Right Chamfered White 'GET IN TOUCH' Button -->
+            <button onclick="toggleSupportModal()" class="chamfer-btn bg-white hover:bg-slate-100 text-slate-900 font-condensed font-bold text-xs sm:text-sm tracking-wider uppercase px-4 sm:px-5 py-2.5 sm:py-3 shadow-md transition active:scale-95">
+                GET IN TOUCH
+            </button>
+        </header>
+
+        <!-- Hero Center Content + Tracking Input -->
+        <div class="relative z-20 max-w-3xl w-full mx-auto px-5 sm:px-8 pt-8 sm:pt-12 pb-6 text-center flex flex-col items-center">
+            <p class="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-white/90 mb-3">
+                LOGISTICS &amp; CARGO TRANSPORTATION
+            </p>
+
+            <h1 class="font-condensed font-bold text-4xl sm:text-6xl md:text-7xl uppercase leading-[0.98] tracking-tight text-white drop-shadow-xs max-w-2xl">
+                MOVING WHAT MATTERS, WHEREVER IT GOES.
+            </h1>
+
+            <p class="mt-4 sm:mt-5 text-sm sm:text-base text-white/90 max-w-xl leading-relaxed font-normal">
+                Reliable cargo transportation built to move your goods safely, efficiently, and on time wherever they need to go.
+            </p>
+
+            <!-- Prominent White Tracking Bar with Orange-Red TRACK Button -->
+            <form onsubmit="handleTrackSubmit(event)" class="mt-7 sm:mt-8 w-full max-w-xl">
+                <div class="chamfer-search bg-white p-1.5 sm:p-2 shadow-2xl shadow-slate-900/25 flex items-center gap-2">
+                    <div class="pl-3 text-slate-400 hidden sm:flex items-center">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </div>
+                    <input 
+                        id="hero-tracking-input"
+                        type="text" 
+                        placeholder="Enter tracking number" 
+                        autocomplete="off"
+                        class="w-full bg-transparent text-slate-900 placeholder-slate-400 text-sm sm:text-base font-medium px-3 py-2.5 sm:py-3 focus:outline-none"
+                    />
+                    <button 
+                        type="submit" 
+                        class="chamfer-btn shrink-0 bg-[#E63917] hover:bg-[#CC2E0F] text-white font-condensed font-bold text-sm sm:text-base tracking-wider uppercase px-6 sm:px-8 py-3 sm:py-3.5 transition active:scale-95 shadow-sm cursor-pointer">
+                        TRACK
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bottom Stacked Orange Shipping Containers Graphic (Matching Reference Photo) -->
+        <div class="relative z-10 mt-auto w-full max-w-4xl mx-auto px-4 pt-4 pointer-events-none select-none flex justify-center">
+            <svg viewBox="0 0 820 340" class="w-full max-w-3xl h-auto drop-shadow-2xl" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- Container Ribbing Pattern -->
+                    <pattern id="ribOrange" width="14" height="100" patternUnits="userSpaceOnUse">
+                        <rect width="7" height="100" fill="#D94B14"/>
+                        <rect x="7" width="7" height="100" fill="#B83809"/>
+                    </pattern>
+                    <pattern id="ribOrangeSide" width="10" height="100" patternUnits="userSpaceOnUse">
+                        <rect width="5" height="100" fill="#9E2D05"/>
+                        <rect x="5" width="5" height="100" fill="#7D2102"/>
+                    </pattern>
+                </defs>
+
+                <!-- Top Container (Slightly angled perspective) -->
+                <g transform="translate(155, 22)">
+                    <!-- Left End Face -->
+                    <polygon points="0,38 115,12 115,112 0,130" fill="#8C2604"/>
+                    <polygon points="8,44 108,21 108,105 8,121" fill="url(#ribOrangeSide)"/>
+                    <!-- Front Long Corrugated Face -->
+                    <polygon points="115,12 520,55 520,145 115,112" fill="#D94B14"/>
+                    <polygon points="122,19 512,60 512,138 122,106" fill="url(#ribOrange)"/>
+                    <!-- Top Highlight Edge -->
+                    <polyline points="0,38 115,12 520,55" fill="none" stroke="#F47A42" stroke-width="3"/>
+                    <!-- Corner Castings -->
+                    <rect x="111" y="10" width="9" height="10" fill="#7D2102"/>
+                    <rect x="111" y="104" width="9" height="10" fill="#7D2102"/>
+                </g>
+
+                <!-- Middle Container -->
+                <g transform="translate(115, 118)">
+                    <!-- Left End Face -->
+                    <polygon points="0,24 140,4 140,108 0,120" fill="#7D2102"/>
+                    <polygon points="8,30 132,12 132,101 8,112" fill="url(#ribOrangeSide)"/>
+                    <!-- Front Long Corrugated Face -->
+                    <polygon points="140,4 575,34 575,132 140,108" fill="#E05219"/>
+                    <polygon points="148,11 567,40 567,125 148,101" fill="url(#ribOrange)"/>
+                    <!-- Top Highlight Edge -->
+                    <polyline points="0,24 140,4 575,34" fill="none" stroke="#F78754" stroke-width="3"/>
+                </g>
+
+                <!-- Bottom Container -->
+                <g transform="translate(80, 215)">
+                    <!-- Left End Face -->
+                    <polygon points="0,12 165,0 165,125 0,125" fill="#6E1D02"/>
+                    <polygon points="10,18 155,8 155,125 10,125" fill="url(#ribOrangeSide)"/>
+                    <!-- Front Long Corrugated Face -->
+                    <polygon points="165,0 645,16 645,125 165,125" fill="#D44611"/>
+                    <polygon points="174,8 635,23 635,125 174,125" fill="url(#ribOrange)"/>
+                    <!-- Top Highlight Edge -->
+                    <polyline points="0,12 165,0 645,16" fill="none" stroke="#F47A42" stroke-width="3"/>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         SECTION B: LIVE TRACKING RESULTS DASHBOARD (REVEALED ON TRACK)
+         ===================================================================== -->
+    <div id="tracking-dashboard-view" class="hidden min-h-screen flex-col">
+
+        <!-- 1. Dashboard Header Navigation with Quick Re-Track Bar -->
+        <header class="bg-white/90 backdrop-blur-md sticky top-0 z-30 border-b border-slate-200/80">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+                <!-- Brand Logo + Back to Search -->
+                <div class="flex items-center gap-3">
+                    <button onclick="returnToHeroSearch()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 px-3 py-2 rounded-xl transition cursor-pointer">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span>New Search</span>
+                    </button>
+                    <div class="h-5 w-px bg-slate-200 hidden sm:block"></div>
+                    <a href="#" onclick="event.preventDefault(); returnToHeroSearch()" class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-[#5E7E9E] flex items-center justify-center text-white">
+                            <svg class="w-5 h-5" viewBox="0 0 64 48" fill="currentColor">
+                                <path d="M10 6h13l9 13 9-13h13L41 24l13 18H41l-9-13-9 13H10l13-18L10 6z"/>
+                            </svg>
+                        </div>
+                        <span class="font-condensed font-bold text-lg tracking-wide uppercase text-slate-900">Swift<span class="text-[#E63917]">Track</span></span>
+                    </a>
+                </div>
+
+                <!-- Inline Mini Tracking Bar -->
+                <form onsubmit="handleInlineTrackSubmit(event)" class="flex-1 max-w-md hidden md:flex items-center bg-slate-100 border border-slate-200/90 rounded-xl p-1">
+                    <input id="inline-tracking-input" type="text" placeholder="Enter another tracking number..." class="w-full bg-transparent text-xs font-medium text-slate-800 px-3 py-1.5 focus:outline-none">
+                    <button type="submit" class="bg-[#E63917] hover:bg-[#CC2E0F] text-white font-condensed font-bold text-xs tracking-wider uppercase px-4 py-1.5 rounded-lg transition cursor-pointer">
+                        TRACK
+                    </button>
+                </form>
+
+                <!-- Right Nav Actions -->
+                <div class="flex items-center gap-2">
+                    <button onclick="scrollToOrderItems()" class="text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-xl hover:bg-slate-100 transition flex items-center gap-1.5">
+                        <i data-lucide="package" class="w-4 h-4 text-slate-500"></i>
+                        <span class="hidden sm:inline">Contents</span>
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full">4</span>
+                    </button>
+                    <button onclick="toggleSupportModal()" class="text-xs sm:text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
+                        <i data-lucide="headphones" class="w-4 h-4"></i>
+                        <span>Support</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Container -->
+        <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+            <!-- 2. Top Recipient, Address & Declared Package Contents Hero Card -->
+            <section id="order-details-card" class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 relative overflow-hidden">
+                <!-- Decorative ambient gradient blob -->
+                <div class="absolute -top-24 -right-24 w-72 h-72 bg-orange-50 rounded-full blur-3xl opacity-70 pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-slate-100 rounded-full blur-3xl opacity-70 pointer-events-none"></div>
+
+                <div class="relative z-10 space-y-6">
+                    <!-- Top Row: Status Pill, Tracking ID & Verification Badges -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-slate-100">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-200/80 text-[#E63917] text-xs font-semibold tracking-wide uppercase" id="status-pill">
+                                <span class="relative flex h-2 w-2">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-[#E63917]"></span>
+                                </span>
+                                <span id="status-pill-text">Out for Delivery • Gatesville, TX</span>
+                            </div>
+
+                            <!-- Tracking ID Pill with Copy Button -->
+                            <div class="inline-flex items-center gap-2.5 bg-slate-50 border border-slate-200/90 rounded-2xl px-3.5 py-1.5">
+                                <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Tracking ID</span>
+                                <code id="tracking-id-text" class="text-sm font-bold text-slate-900 font-mono tracking-tight">VCG-76528-TX</code>
+                                <button onclick="copyTrackingId()" title="Copy Tracking ID" class="ml-1 inline-flex items-center gap-1 text-xs font-semibold text-[#E63917] hover:text-[#CC2E0F] bg-white hover:bg-orange-50 border border-slate-200 px-2.5 py-1 rounded-xl shadow-2xs transition active:scale-95 cursor-pointer">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                    <span id="copy-btn-label">Copy</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/70 px-3 py-1.5 rounded-xl">Verified Recipient</span>
+                            <span class="text-xs text-slate-600 font-medium hidden sm:inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200/70 px-3 py-1.5 rounded-xl">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i>
+                                <span>Vault Insured</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Middle Row: Recipient Name & Delivery Address -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex items-start gap-4 bg-slate-50/80 border border-slate-200/70 rounded-2xl p-4 sm:p-5">
+                            <div class="w-11 h-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+                                <i data-lucide="user-check" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recipient Name</p>
+                                <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-0.5">Lilibeth Villamor</h1>
+                                <p class="text-slate-500 text-xs mt-1">Signature &amp; Photo ID Required on Handover</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 bg-orange-50/40 border border-orange-200/70 rounded-2xl p-4 sm:p-5">
+                            <div class="w-11 h-11 rounded-2xl bg-[#E63917] text-white flex items-center justify-center shrink-0">
+                                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Delivery Address</p>
+                                <p class="font-display font-bold text-lg sm:text-xl text-slate-900 leading-snug mt-0.5">
+                                    117 Northern Avenue<br>
+                                    Gatesville, TX 76528
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Row: Declared Package Contents (Gold bar, Photo, Envelope, Diamond ring) -->
+                    <div class="pt-2">
+                        <div class="flex items-center justify-between mb-3.5">
+                            <div>
+                                <h2 class="font-display text-base font-bold text-slate-900">Declared Package Contents</h2>
+                                <p class="text-xs text-slate-500">4 verified items sealed inside tamper-evident parcel</p>
+                            </div>
+                            <span class="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg">4 Items</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                            <!-- Item 1: Gold bar -->
+                            <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80">
+                                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                                    <i data-lucide="coins" class="w-5 h-5"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-bold text-slate-900">Gold bar</p>
+                                    <p class="text-xs text-amber-800 font-medium mt-0.5">24K Assay-Certified</p>
+                                </div>
+                            </div>
+
+                            <!-- Item 2: Photo -->
+                            <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                                <div class="w-11 h-11 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+                                    <i data-lucide="image" class="w-5 h-5"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-bold text-slate-900">Photo</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Archival Sleeve</p>
+                                </div>
+                            </div>
+
+                            <!-- Item 3: Envelope -->
+                            <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                                <div class="w-11 h-11 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                                    <i data-lucide="mail" class="w-5 h-5"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-bold text-slate-900">Envelope</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Wax-Sealed Letter</p>
+                                </div>
+                            </div>
+
+                            <!-- Item 4: Diamond ring -->
+                            <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-rose-50/60 border border-rose-200/80">
+                                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                                    <i data-lucide="gem" class="w-5 h-5"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-bold text-slate-900">Diamond ring</p>
+                                    <p class="text-xs text-rose-700 font-medium mt-0.5">Velvet Case</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Order Tracking Progress Stepper -->
+            <section class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 sm:mb-8">
+                    <div>
+                        <h2 class="font-display text-lg font-bold text-slate-900">Shipment Progress</h2>
+                        <p class="text-sm text-slate-500">Real-time milestone updates along the Central Texas freight corridor</p>
+                    </div>
+                    <div class="text-xs font-medium text-slate-500 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/70 self-start sm:self-auto">
+                        Carrier: <span class="font-semibold text-slate-800">SwiftTrack Armored Express</span>
+                    </div>
+                </div>
+
+                <!-- Responsive Stepper Wrapper -->
+                <div id="stepper-container" class="relative">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- 4. Full-Width Live Interactive Map Section -->
+            <section class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col">
+                <div class="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-orange-50 text-[#E63917] flex items-center justify-center">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-display text-base sm:text-lg font-bold text-slate-900">Live Route &amp; Delivery Location</h2>
+                            <p class="text-xs text-slate-500" id="map-subtitle">Waco Regional Hub → 117 Northern Avenue, Gatesville, TX 76528</p>
+                        </div>
+                    </div>
+
+                    <!-- Zoom & Center Controls -->
+                    <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                        <button onclick="zoomMap(0.15)" title="Zoom In" class="p-1.5 rounded-lg bg-white text-slate-700 hover:text-[#E63917] shadow-2xs transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="zoomMap(-0.15)" title="Zoom Out" class="p-1.5 rounded-lg bg-white text-slate-700 hover:text-[#E63917] shadow-2xs transition">
+                            <i data-lucide="minus" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="resetMapZoom()" title="Reset View" class="p-1.5 rounded-lg bg-white text-slate-700 hover:text-[#E63917] shadow-2xs transition">
+                            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stylized Vector Map Canvas for Gatesville, TX 76528 -->
+                <div class="relative w-full h-[380px] sm:h-[430px] map-grid-bg overflow-hidden select-none">
+                    <svg id="delivery-map-svg" viewBox="0 0 800 500" class="w-full h-full object-cover transition-transform duration-300 ease-out origin-center">
+                        <defs>
+                            <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#10b981" />
+                                <stop offset="65%" stop-color="#E63917" />
+                                <stop offset="100%" stop-color="#4f46e5" />
+                            </linearGradient>
+                            <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.14"/>
+                            </filter>
+                        </defs>
+
+                        <!-- Leon River (Gatesville, TX waterway) -->
+                        <path d="M 520,0 Q 560,130 510,230 T 575,410 L 610,500 L 570,500 Q 535,410 475,230 T 485,0 Z" fill="#dbeafe" opacity="0.85"/>
+
+                        <!-- Parks / Coryell County Green Spaces -->
+                        <rect x="85" y="65" width="120" height="75" rx="18" fill="#dcfce7" opacity="0.75"/>
+                        <rect x="615" y="135" width="125" height="85" rx="20" fill="#dcfce7" opacity="0.75"/>
+
+                        <!-- Local Gatesville Streets (Northern Ave, Main St, TX-36) -->
+                        <g stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none">
+                            <path d="M 50,115 L 430,115 L 510,210" />
+                            <path d="M 160,30 L 160,350" />
+                            <path d="M 310,45 L 310,380" />
+                            <path d="M 580,220 L 760,220" />
+                            <path d="M 665,180 L 665,420" />
+                        </g>
+
+                        <!-- US-84 Highway Arterial -->
+                        <path d="M 55,235 C 185,235 270,165 390,190 C 495,212 535,315 700,295" stroke="#ffffff" stroke-width="16" stroke-linecap="round" fill="none"/>
+
+                        <!-- Highway Label Pill -->
+                        <g transform="translate(245, 165)">
+                            <rect width="54" height="20" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+                            <text x="27" y="14" text-anchor="middle" fill="#475569" font-size="10" font-family="Inter, sans-serif" font-weight="700">US-84 W</text>
+                        </g>
+
+                        <!-- Completed Route Segment -->
+                        <path id="route-base" d="M 130,225 C 215,225 275,165 390,190 C 495,212 535,315 665,295" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 10" fill="none"/>
+
+                        <!-- Active Illuminated Route Path -->
+                        <path id="route-active" d="M 130,225 C 215,225 275,165 390,190 C 495,212 535,315 665,295" stroke="url(#routeGrad)" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+                        <!-- Animated Flow Overlay -->
+                        <path d="M 130,225 C 215,225 275,165 390,190 C 495,212 535,315 665,295" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 18" class="animate-dash" opacity="0.9" fill="none"/>
+
+                        <!-- Origin Pin: Waco / Central TX Hub -->
+                        <g transform="translate(130, 225)">
+                            <circle r="14" fill="#10b981" opacity="0.2"/>
+                            <circle r="7" fill="#10b981" stroke="#ffffff" stroke-width="2.5"/>
+                            <g transform="translate(-56, -38)" filter="url(#softShadow)">
+                                <rect width="112" height="26" rx="8" fill="#0f172a"/>
+                                <text x="56" y="17" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter, sans-serif" font-weight="600">Central TX Hub</text>
+                            </g>
+                        </g>
+
+                        <!-- Destination Pin: 117 Northern Avenue, Gatesville, TX 76528 -->
+                        <g transform="translate(665, 295)">
+                            <circle r="24" fill="#E63917" opacity="0.18" class="animate-ping"/>
+                            <circle r="10" fill="#E63917" stroke="#ffffff" stroke-width="3"/>
+                            <g transform="translate(-82, 16)" filter="url(#softShadow)">
+                                <rect width="164" height="36" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+                                <text x="82" y="15" text-anchor="middle" fill="#0f172a" font-size="11" font-family="Inter, sans-serif" font-weight="700">117 Northern Avenue</text>
+                                <text x="82" y="28" text-anchor="middle" fill="#64748b" font-size="10" font-family="Inter, sans-serif" font-weight="600">Gatesville, TX 76528</text>
+                            </g>
+                        </g>
+
+                        <!-- Moving Delivery Van Marker -->
+                        <g id="courier-marker" transform="translate(465, 218)" filter="url(#softShadow)">
+                            <circle r="24" fill="#E63917" opacity="0.22"/>
+                            <circle r="16" fill="#E63917" stroke="#ffffff" stroke-width="3"/>
+                            <g transform="translate(-8, -8)" stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 3h10v8H1z"/>
+                                <path d="M11 6h3l2 2v3h-5V6z"/>
+                                <circle cx="4" cy="12.5" r="1.5"/>
+                                <circle cx="13.5" cy="12.5" r="1.5"/>
+                            </g>
+                        </g>
+                    </svg>
+
+                    <!-- Floating Top-Left Distance Badge -->
+                    <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl px-3.5 py-2 shadow-sm flex items-center gap-2.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <div class="text-xs">
+                            <span class="text-slate-500">Distance away:</span>
+                            <span id="distance-away" class="font-bold text-slate-900 ml-1">3.1 mi (9 mins)</span>
+                        </div>
+                    </div>
+
+                    <!-- Floating Courier Info Card (Bottom) -->
+                    <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl p-3.5 sm:p-4 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="relative shrink-0">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" 
+                                     onerror="this.src='https://placehold.co/96x96/E63917/ffffff?text=MR'"
+                                     alt="Courier Marcus Reynolds" 
+                                     class="w-11 h-11 rounded-2xl object-cover border border-slate-200">
+                                <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white"></span>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-display font-bold text-sm text-slate-900">Marcus Reynolds</h3>
+                                    <span class="inline-flex items-center gap-0.5 text-xs font-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md">
+                                        ★ 4.98
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5">Armored Transit Sprinter • <span class="font-medium text-slate-700">TX-849-VGC</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Quick Contact Button -->
+                        <div class="flex items-center gap-2 self-end sm:self-center">
+                            <button onclick="showToast('Secure courier message channel opened')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E63917] hover:bg-[#CC2E0F] text-white text-xs font-semibold shadow-xs transition cursor-pointer">
+                                <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                                <span>Message</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 border-t border-slate-200/60 mt-8">
+            <p>© 2026 SwiftTrack Logistics &amp; Cargo Transportation. All rights reserved.</p>
+            <div class="flex items-center gap-4 mt-2 sm:mt-0">
+                <a href="#" onclick="event.preventDefault(); showToast('SMS notifications active for Gatesville, TX delivery')" class="hover:text-slate-600 transition">SMS Alerts Active</a>
+                <span>•</span>
+                <a href="#" onclick="event.preventDefault(); toggleSupportModal()" class="hover:text-slate-600 transition">24/7 Dispatch Desk</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Navigation Drawer Modal (From Hero Hamburger Menu) -->
+    <div id="nav-drawer" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-slate-900 text-white w-72 h-full p-6 flex flex-col justify-between shadow-2xl border-r border-slate-800">
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <span class="font-condensed font-bold text-xl tracking-wider uppercase">SwiftTrack</span>
+                    <button onclick="toggleNavDrawer()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <nav class="space-y-2 text-sm font-medium">
+                    <button onclick="toggleNavDrawer(); returnToHeroSearch()" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-white/10 text-white flex items-center gap-3">
+                        <i data-lucide="search" class="w-4 h-4 text-[#E63917]"></i>
+                        <span>Track a Shipment</span>
+                    </button>
+                    <button onclick="toggleNavDrawer(); toggleSupportModal()" class="w-full text-left px-3.5 py-2.5 rounded-xl text-slate-300 hover:bg-white/5 hover:text-white flex items-center gap-3">
+                        <i data-lucide="headphones" class="w-4 h-4 text-sky-400"></i>
+                        <span>Get In Touch</span>
+                    </button>
+                </nav>
+            </div>
+            <p class="text-xs text-slate-500">Global Freight &amp; Secure Courier Network</p>
+        </div>
+    </div>
+
+    <!-- Support / Get In Touch Modal -->
+    <div id="support-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 transform transition-all">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-orange-50 text-[#E63917] flex items-center justify-center">
+                        <i data-lucide="life-buoy" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-slate-900">SwiftTrack Dispatch Support</h3>
+                </div>
+                <button onclick="toggleSupportModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed">
+                Need assistance with shipment <span id="modal-tracking-ref" class="font-mono font-semibold text-slate-900">VCG-76528-TX</span> for <span class="font-semibold text-slate-900">Lilibeth Villamor</span>?
+            </p>
+            <div class="space-y-2.5 pt-1">
+                <button onclick="toggleSupportModal(); showToast('Delivery verification instructions updated for Gatesville, TX.')" class="w-full text-left p-3.5 rounded-2xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50/40 transition flex items-center justify-between group">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900 group-hover:text-[#E63917]">Verify Recipient ID Window</p>
+                        <p class="text-xs text-slate-500">Confirm handover at 117 Northern Avenue</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 group-hover:text-[#E63917]"></i>
+                </button>
+                <button onclick="toggleSupportModal(); showToast('Connected to 24/7 Cargo Specialist!')" class="w-full text-left p-3.5 rounded-2xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50/40 transition flex items-center justify-between group">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900 group-hover:text-[#E63917]">Chat with Live Dispatch</p>
+                        <p class="text-xs text-slate-500">Average response time: under 2 mins</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 group-hover:text-[#E63917]"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // ==========================================
+        // 0. TRACKING SEARCH FLOW (ANY TRACKING ID -> SHIPMENT DETAILS)
+        // ==========================================
+        function handleTrackSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('hero-tracking-input');
+            const rawCode = input.value.trim();
+            if (!rawCode) {
+                input.focus();
+                showToast('Please enter a tracking number');
+                return;
+            }
+            launchTrackingDetails(rawCode.toUpperCase());
+        }
+
+        function handleInlineTrackSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('inline-tracking-input');
+            const rawCode = input.value.trim();
+            if (!rawCode) {
+                input.focus();
+                showToast('Please enter a tracking number');
+                return;
+            }
+            input.value = '';
+            launchTrackingDetails(rawCode.toUpperCase());
+        }
+
+        function launchTrackingDetails(trackingCode) {
+            // Update all tracking ID badges to display the entered code
+            document.getElementById('tracking-id-text').textContent = trackingCode;
+            document.getElementById('modal-tracking-ref').textContent = trackingCode;
+
+            // Transition from Hero Search View to Detailed Tracking Dashboard
+            document.getElementById('hero-landing-view').classList.add('hidden');
+            const dashboard = document.getElementById('tracking-dashboard-view');
+            dashboard.classList.remove('hidden');
+            dashboard.classList.add('flex');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            lucide.createIcons();
+            showToast(`Tracking details loaded for ${trackingCode}`);
+        }
+
+        function returnToHeroSearch() {
+            document.getElementById('tracking-dashboard-view').classList.add('hidden');
+            document.getElementById('tracking-dashboard-view').classList.remove('flex');
+            document.getElementById('hero-landing-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleNavDrawer() {
+            const drawer = document.getElementById('nav-drawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // 1. ORDER TRACKING PROGRESS STEPPER DATA & RENDERER
+        // ==========================================
+        const trackingSteps = [
+            {
+                id: 1,
+                title: 'Order confirmed',
+                timestamp: 'Nov 13, 09:20 AM',
+                subtext: 'Vault manifest & insured label created',
+                icon: 'clipboard-check'
+            },
+            {
+                id: 2,
+                title: 'Order processed',
+                timestamp: 'Nov 13, 02:15 PM',
+                subtext: '4 items verified & tamper-sealed',
+                icon: 'box'
+            },
+            {
+                id: 3,
+                title: 'Package shipped',
+                timestamp: 'Nov 14, 08:45 AM',
+                subtext: 'Departed Central TX Vault Facility',
+                icon: 'truck'
+            },
+            {
+                id: 4,
+                title: 'Out for delivery',
+                timestamp: 'En Route • Gatesville, TX',
+                subtext: 'Heading to 117 Northern Avenue',
+                icon: 'navigation'
+            },
+            {
+                id: 5,
+                title: 'Delivered',
+                timestamp: 'Pending Handover',
+                subtext: 'Signed handover to Lilibeth Villamor',
+                icon: 'home'
+            }
+        ];
+
+        let currentStage = 4;
+
+        function renderStepper(activeStep) {
+            const container = document.getElementById('stepper-container');
+            const progressPercent = ((activeStep - 1) / (trackingSteps.length - 1)) * 100;
+
+            let html = `
+                <div class="hidden md:block absolute top-6 left-[10%] right-[10%] h-1 bg-slate-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-emerald-500 via-emerald-500 to-[#E63917] transition-all duration-500 rounded-full" style="width: ${progressPercent}%"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-3 relative z-10">
+            `;
+
+            trackingSteps.forEach((step, index) => {
+                const isCompleted = step.id < activeStep || (activeStep === 5 && step.id === 5);
+                const isActive = step.id === activeStep && activeStep !== 5;
+
+                let circleClasses = '';
+                let iconName = step.icon;
+                let titleColor = 'text-slate-900';
+                let badgeHtml = '';
+
+                if (isCompleted) {
+                    circleClasses = 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25 ring-4 ring-white';
+                    iconName = 'check';
+                    badgeHtml = `<span class="inline-block text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md mt-1">${step.id === 5 ? 'Nov 18, 2:30 PM' : step.timestamp}</span>`;
+                } else if (isActive) {
+                    circleClasses = 'bg-[#E63917] text-white shadow-lg shadow-orange-600/30 ring-4 ring-orange-100';
+                    badgeHtml = `
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#E63917] bg-orange-50 border border-orange-200/80 px-2.5 py-0.5 rounded-md mt-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#E63917] animate-ping"></span>
+                            ${step.timestamp}
+                        </span>
+                    `;
+                } else {
+                    circleClasses = 'bg-slate-100 text-slate-400 border border-slate-200 ring-4 ring-white';
+                    titleColor = 'text-slate-400';
+                    badgeHtml = `<span class="inline-block text-[11px] font-medium text-slate-400 mt-1">${step.timestamp}</span>`;
+                }
+
+                const isLast = index === trackingSteps.length - 1;
+                const mobileLineColor = isCompleted ? 'bg-emerald-500' : 'bg-slate-200';
+
+                html += `
+                    <div class="relative flex md:flex-col items-start md:items-center md:text-center gap-4 md:gap-3">
+                        ${!isLast ? `<div class="md:hidden absolute left-6 top-12 bottom-[-24px] w-0.5 ${mobileLineColor}"></div>` : ''}
+
+                        <div class="relative shrink-0">
+                            ${isActive ? '<span class="absolute inset-0 rounded-2xl bg-[#E63917] animate-pulse-ring"></span>' : ''}
+                            <div class="relative w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${circleClasses}">
+                                <i data-lucide="${iconName}" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+
+                        <div class="pt-0.5 md:pt-1">
+                            <h3 class="font-display font-bold text-sm ${titleColor}">${step.title}</h3>
+                            ${badgeHtml}
+                            <p class="text-xs text-slate-500 mt-1 max-w-[180px] leading-snug">${step.subtext}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function setStage(stage) {
+            currentStage = stage;
+            renderStepper(stage);
+
+            const statusPillText = document.getElementById('status-pill-text');
+            const courierMarker = document.getElementById('courier-marker');
+            const distanceAway = document.getElementById('distance-away');
+
+            const stageConfigs = {
+                1: { pill: 'Order Confirmed • Manifest Logged', pos: 'translate(130, 225)', dist: '38.4 mi (At Central TX Hub)' },
+                2: { pill: 'Order Processed • 4 Items Sealed', pos: 'translate(130, 225)', dist: '38.4 mi (Awaiting Dispatch)' },
+                3: { pill: 'Package Shipped • US-84 West', pos: 'translate(295, 180)', dist: '19.2 mi (24 mins)' },
+                4: { pill: 'Out for Delivery • Gatesville, TX', pos: 'translate(465, 218)', dist: '3.1 mi (9 mins)' },
+                5: { pill: 'Delivered • Signed by Lilibeth Villamor', pos: 'translate(665, 295)', dist: '0.0 mi (Arrived at 117 Northern Ave)' }
+            };
+
+            const cfg = stageConfigs[stage];
+            statusPillText.textContent = cfg.pill;
+            courierMarker.setAttribute('transform', cfg.pos);
+            distanceAway.textContent = cfg.dist;
+        }
+
+        renderStepper(currentStage);
+
+        // ==========================================
+        // 3. COPY TRACKING ID WITH TOAST FEEDBACK
+        // ==========================================
+        function copyTrackingId() {
+            const trackingText = document.getElementById('tracking-id-text').innerText;
+            const tempInput = document.createElement('input');
+            tempInput.value = trackingText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const copyLabel = document.getElementById('copy-btn-label');
+            copyLabel.textContent = 'Copied!';
+            setTimeout(() => {
+                copyLabel.textContent = 'Copy';
+            }, 2000);
+
+            showToast(`Tracking ID ${trackingText} copied to clipboard!`);
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.textContent = message;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        // ==========================================
+        // 4. INTERACTIVE MAP ZOOM CONTROLS
+        // ==========================================
+        let currentZoom = 1;
+        function zoomMap(delta) {
+            currentZoom = Math.min(Math.max(currentZoom + delta, 0.85), 1.6);
+            document.getElementById('delivery-map-svg').style.transform = `scale(${currentZoom})`;
+        }
+
+        function resetMapZoom() {
+            currentZoom = 1;
+            document.getElementById('delivery-map-svg').style.transform = `scale(1)`;
+        }
+
+        // ==========================================
+        // 5. NAVIGATION & MODAL HELPERS
+        // ==========================================
+        function scrollToOrderItems() {
+            document.getElementById('order-details-card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleSupportModal() {
+            const modal = document.getElementById('support-modal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+    </script>
+</body>
+</html>
