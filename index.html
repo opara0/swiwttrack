@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SwiftTrack — Live Order Delivery Tracking</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Oswald, Plus Jakarta Sans & Inter -->
@@ -98,9 +100,7 @@
         <header class="relative z-20 max-w-6xl w-full mx-auto px-5 sm:px-8 pt-6 pb-4 flex items-center justify-between">
             <!-- Geometric Logistics Emblem -->
             <a href="#" onclick="event.preventDefault()" class="flex items-center gap-2.5 group" aria-label="SwiftTrack Home">
-                <svg class="w-11 h-11 text-white drop-shadow-sm transition-transform duration-300 group-hover:scale-105" viewBox="0 0 64 48" fill="currentColor">
-                    <path d="M10 6h13l9 13 9-13h13L41 24l13 18H41l-9-13-9 13H10l13-18L10 6z"/>
-                </svg>
+                <img src="logo.png" alt="" class="w-11 h-11 object-contain drop-shadow-sm transition-transform duration-300 group-hover:scale-105">
                 <span class="font-condensed font-bold text-xl sm:text-2xl tracking-wider uppercase text-white drop-shadow-xs">SwiftTrack</span>
             </a>
 
@@ -215,11 +215,7 @@
                     </button>
                     <div class="h-5 w-px bg-slate-200 hidden sm:block"></div>
                     <a href="#" onclick="event.preventDefault(); returnToHeroSearch()" class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-[#5E7E9E] flex items-center justify-center text-white">
-                            <svg class="w-5 h-5" viewBox="0 0 64 48" fill="currentColor">
-                                <path d="M10 6h13l9 13 9-13h13L41 24l13 18H41l-9-13-9 13H10l13-18L10 6z"/>
-                            </svg>
-                        </div>
+                        <img src="logo.png" alt="" class="w-8 h-8 object-contain">
                         <span class="font-condensed font-bold text-lg tracking-wide uppercase text-slate-900">Swift<span class="text-[#E63917]">Track</span></span>
                     </a>
                 </div>
