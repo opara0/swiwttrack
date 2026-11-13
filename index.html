@@ -215,9 +215,9 @@
          ===================================================================== -->
     <div id="tracking-dashboard-view" class="hidden min-h-screen flex-col">
 
-        <!-- 1. Dashboard Header Navigation with Quick Re-Track Bar -->
+        <!-- Dashboard Header -->
         <header class="bg-white/90 backdrop-blur-md sticky top-0 z-30 border-b border-slate-200/80">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">
                 <!-- Brand Logo + Back to Search -->
                 <div class="flex items-center gap-3">
                     <button onclick="returnToHeroSearch()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 px-3 py-2 rounded-xl transition cursor-pointer">
@@ -234,42 +234,21 @@
                         <span class="font-condensed font-bold text-lg tracking-wide uppercase text-slate-900">Swift<span class="text-[#E63917]">Track</span></span>
                     </a>
                 </div>
-
-                <!-- Inline Mini Tracking Bar -->
-                <form onsubmit="handleInlineTrackSubmit(event)" class="flex-1 max-w-md hidden md:flex items-center bg-slate-100 border border-slate-200/90 rounded-xl p-1">
-                    <input id="inline-tracking-input" type="text" placeholder="Enter another tracking number..." class="w-full bg-transparent text-xs font-medium text-slate-800 px-3 py-1.5 focus:outline-none">
-                    <button type="submit" class="bg-[#E63917] hover:bg-[#CC2E0F] text-white font-condensed font-bold text-xs tracking-wider uppercase px-4 py-1.5 rounded-lg transition cursor-pointer">
-                        TRACK
-                    </button>
-                </form>
-
-                <!-- Right Nav Actions -->
-                <div class="flex items-center gap-2">
-                    <button onclick="scrollToOrderItems()" class="text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-xl hover:bg-slate-100 transition flex items-center gap-1.5">
-                        <i data-lucide="package" class="w-4 h-4 text-slate-500"></i>
-                        <span class="hidden sm:inline">Contents</span>
-                        <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full">4</span>
-                    </button>
-                    <button onclick="toggleSupportModal()" class="text-xs sm:text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
-                        <i data-lucide="headphones" class="w-4 h-4"></i>
-                        <span>Support</span>
-                    </button>
-                </div>
+                <a href="https://t.me/Swifttrack11" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-[#E63917] hover:bg-[#CC2E0F] px-3.5 py-2 rounded-xl transition">
+                    <i data-lucide="headphones" class="w-4 h-4"></i>
+                    <span>Support</span>
+                </a>
             </div>
         </header>
 
         <!-- Main Content Container -->
         <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
 
-            <!-- 2. Top Recipient, Address & Declared Package Contents Hero Card -->
-            <section id="order-details-card" class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 relative overflow-hidden">
-                <!-- Decorative ambient gradient blob -->
-                <div class="absolute -top-24 -right-24 w-72 h-72 bg-orange-50 rounded-full blur-3xl opacity-70 pointer-events-none"></div>
-                <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-slate-100 rounded-full blur-3xl opacity-70 pointer-events-none"></div>
-
-                <div class="relative z-10 space-y-6">
-                    <!-- Top Row: Status Pill, Tracking ID & Verification Badges -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-slate-100">
+            <!-- Shipment Status, Tracking ID, Recipient, and Destination -->
+            <section class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
+                <div class="space-y-6">
+                    <!-- Status and tracking ID -->
+                    <div class="flex flex-wrap items-center gap-3 pb-5 border-b border-slate-100">
                         <div class="flex flex-wrap items-center gap-3">
                             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-200/80 text-[#E63917] text-xs font-semibold tracking-wide uppercase" id="status-pill">
                                 <span class="relative flex h-2 w-2">
@@ -288,14 +267,6 @@
                                     <span id="copy-btn-label">Copy</span>
                                 </button>
                             </div>
-                        </div>
-
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/70 px-3 py-1.5 rounded-xl">Verified Recipient</span>
-                            <span class="text-xs text-slate-600 font-medium hidden sm:inline-flex items-center gap-1.5 bg-amber-50 border border-amber-200/70 px-3 py-1.5 rounded-xl">
-                                <i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i>
-                                <span>Vault Insured</span>
-                            </span>
                         </div>
                     </div>
 
@@ -325,76 +296,13 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Bottom Row: Declared Package Contents (Gold bar, Photo, Envelope, Diamond ring) -->
-                    <div class="pt-2">
-                        <div class="flex items-center justify-between mb-3.5">
-                            <div>
-                                <h2 class="font-display text-base font-bold text-slate-900">Declared Package Contents</h2>
-                                <p class="text-xs text-slate-500">4 verified items sealed inside tamper-evident parcel</p>
-                            </div>
-                            <span class="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg">4 Items</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                            <!-- Item 1: Gold bar -->
-                            <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80">
-                                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                                    <i data-lucide="coins" class="w-5 h-5"></i>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-bold text-slate-900">Gold bar</p>
-                                    <p class="text-xs text-amber-800 font-medium mt-0.5">24K Assay-Certified</p>
-                                </div>
-                            </div>
-
-                            <!-- Item 2: Photo -->
-                            <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                                <div class="w-11 h-11 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
-                                    <i data-lucide="image" class="w-5 h-5"></i>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-bold text-slate-900">Photo</p>
-                                    <p class="text-xs text-slate-500 mt-0.5">Archival Sleeve</p>
-                                </div>
-                            </div>
-
-                            <!-- Item 3: Envelope -->
-                            <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                                <div class="w-11 h-11 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
-                                    <i data-lucide="mail" class="w-5 h-5"></i>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-bold text-slate-900">Envelope</p>
-                                    <p class="text-xs text-slate-500 mt-0.5">Wax-Sealed Letter</p>
-                                </div>
-                            </div>
-
-                            <!-- Item 4: Diamond ring -->
-                            <div class="flex items-center gap-3.5 p-3.5 rounded-2xl bg-rose-50/60 border border-rose-200/80">
-                                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                                    <i data-lucide="gem" class="w-5 h-5"></i>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-sm font-bold text-slate-900">Diamond ring</p>
-                                    <p class="text-xs text-rose-700 font-medium mt-0.5">Velvet Case</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
             <!-- 3. Order Tracking Progress Stepper -->
             <section class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 sm:mb-8">
-                    <div>
-                        <h2 class="font-display text-lg font-bold text-slate-900">Shipment Progress</h2>
-                        <p class="text-sm text-slate-500">Real-time milestone updates along the Central Texas freight corridor</p>
-                    </div>
-                    <div class="text-xs font-medium text-slate-500 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200/70 self-start sm:self-auto">
-                        Carrier: <span class="font-semibold text-slate-800">SwiftTrack Armored Express</span>
-                    </div>
+                    <h2 class="font-display text-lg font-bold text-slate-900">Shipment Progress</h2>
                 </div>
 
                 <!-- Responsive Stepper Wrapper -->
@@ -521,48 +429,58 @@
                         </div>
                     </div>
 
-                    <!-- Floating Courier Info Card (Bottom) -->
-                    <div class="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl p-3.5 sm:p-4 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div class="flex items-center gap-3">
-                            <div class="relative shrink-0">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" 
-                                     onerror="this.src='https://placehold.co/96x96/E63917/ffffff?text=MR'"
-                                     alt="Courier Marcus Reynolds" 
-                                     class="w-11 h-11 rounded-2xl object-cover border border-slate-200">
-                                <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white"></span>
-                            </div>
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h3 class="font-display font-bold text-sm text-slate-900">Marcus Reynolds</h3>
-                                    <span class="inline-flex items-center gap-0.5 text-xs font-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md">
-                                        ★ 4.98
-                                    </span>
-                                </div>
-                                <p class="text-xs text-slate-500 mt-0.5">Armored Transit Sprinter • <span class="font-medium text-slate-700">TX-849-VGC</span></p>
-                            </div>
-                        </div>
+                </div>
+            </section>
 
-                        <!-- Quick Contact Button -->
-                        <div class="flex items-center gap-2 self-end sm:self-center">
-                            <button onclick="showToast('Secure courier message channel opened')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#E63917] hover:bg-[#CC2E0F] text-white text-xs font-semibold shadow-xs transition cursor-pointer">
-                                <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
-                                <span>Message</span>
-                            </button>
+            <!-- Package contents at the end of the tracking page -->
+            <section class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="font-display text-lg font-bold text-slate-900">Package Contents</h2>
+                        <p class="text-sm text-slate-500">4 items in this shipment</p>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg">4 Items</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-600 text-white flex items-center justify-center shrink-0">
+                            <i data-lucide="coins" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900">Gold bar</p>
+                            <p class="text-xs text-amber-800 font-medium mt-0.5">24K Assay-Certified</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                        <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="image" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900">Photo</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Archival Sleeve</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900">Envelope</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Wax-Sealed Letter</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 p-3.5 rounded-2xl bg-rose-50/60 border border-rose-200/80">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shrink-0">
+                            <i data-lucide="gem" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900">Diamond ring</p>
+                            <p class="text-xs text-rose-700 font-medium mt-0.5">Velvet Case</p>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
-
-        <!-- Footer -->
-        <footer class="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 border-t border-slate-200/60 mt-8">
-            <p>© 2026 SwiftTrack Logistics &amp; Cargo Transportation. All rights reserved.</p>
-            <div class="flex items-center gap-4 mt-2 sm:mt-0">
-                <a href="#" onclick="event.preventDefault(); showToast('SMS notifications active for Gatesville, TX delivery')" class="hover:text-slate-600 transition">SMS Alerts Active</a>
-                <span>•</span>
-                <a href="#" onclick="event.preventDefault(); toggleSupportModal()" class="hover:text-slate-600 transition">24/7 Dispatch Desk</a>
-            </div>
-        </footer>
     </div>
 
     <!-- Navigation Drawer Modal (From Hero Hamburger Menu) -->
@@ -645,19 +563,6 @@
             launchTrackingDetails(rawCode.toUpperCase());
         }
 
-        function handleInlineTrackSubmit(event) {
-            event.preventDefault();
-            const input = document.getElementById('inline-tracking-input');
-            const rawCode = input.value.trim();
-            if (!rawCode) {
-                input.focus();
-                showToast('Please enter a tracking number');
-                return;
-            }
-            input.value = '';
-            launchTrackingDetails(rawCode.toUpperCase());
-        }
-
         function launchTrackingDetails(trackingCode) {
             // Update all tracking ID badges to display the entered code
             document.getElementById('tracking-id-text').textContent = trackingCode;
@@ -727,7 +632,7 @@
             }
         ];
 
-        let currentStage = 4;
+        let currentStage = 3;
 
         function renderStepper(activeStep) {
             const container = document.getElementById('stepper-container');
@@ -818,7 +723,7 @@
             distanceAway.textContent = cfg.dist;
         }
 
-        renderStepper(currentStage);
+        setStage(currentStage);
 
         // ==========================================
         // 3. COPY TRACKING ID WITH TOAST FEEDBACK
@@ -874,10 +779,6 @@
         // ==========================================
         // 5. NAVIGATION & MODAL HELPERS
         // ==========================================
-        function scrollToOrderItems() {
-            document.getElementById('order-details-card').scrollIntoView({ behavior: 'smooth' });
-        }
-
         function toggleSupportModal() {
             const modal = document.getElementById('support-modal');
             if (modal.classList.contains('hidden')) {
