@@ -240,13 +240,13 @@
                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
                                     <span class="relative inline-flex rounded-full h-2 w-2 bg-[#E63917]"></span>
                                 </span>
-                                <span id="status-pill-text">Out for Delivery • Gatesville, TX</span>
+                                <span id="status-pill-text">Package Shipped • Gatesville, TX</span>
                             </div>
 
                             <!-- Tracking ID Pill with Copy Button -->
                             <div class="inline-flex items-center gap-2.5 bg-slate-50 border border-slate-200/90 rounded-2xl px-3.5 py-1.5">
                                 <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Tracking ID</span>
-                                <code id="tracking-id-text" class="text-sm font-bold text-slate-900 font-mono tracking-tight">VCG-76528-TX</code>
+                                <code id="tracking-id-text" class="text-sm font-bold text-slate-900 font-mono tracking-tight">9901</code>
                                 <button onclick="copyTrackingId()" title="Copy Tracking ID" class="ml-1 inline-flex items-center gap-1 text-xs font-semibold text-[#E63917] hover:text-[#CC2E0F] bg-white hover:bg-orange-50 border border-slate-200 px-2.5 py-1 rounded-xl shadow-2xs transition active:scale-95 cursor-pointer">
                                     <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                     <span id="copy-btn-label">Copy</span>
@@ -273,10 +273,10 @@
                                 <i data-lucide="map-pin" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Delivery Address</p>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Shipment Route</p>
                                 <p class="font-display font-bold text-lg sm:text-xl text-slate-900 leading-snug mt-0.5">
-                                    117 Northern Avenue<br>
-                                    Gatesville, TX 76528
+                                        SwiftTrack 9901<br>
+                                        to 117 Northern Avenue, Gatesville, TX 76528
                                 </p>
                             </div>
                         </div>
@@ -304,14 +304,14 @@
                             <i data-lucide="map-pin" class="w-4 h-4"></i>
                         </div>
                         <div>
-                            <h2 class="font-display text-base sm:text-lg font-bold text-slate-900">Live Route &amp; Delivery Location</h2>
-                            <p class="text-xs text-slate-500" id="map-subtitle">Waco Regional Hub → 117 Northern Avenue, Gatesville, TX 76528</p>
+                            <h2 class="font-display text-base sm:text-lg font-bold text-slate-900">Shipment Route Overview</h2>
+                            <p class="text-xs text-slate-500" id="map-subtitle">Syria</p>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Stylized Vector Map Canvas for Gatesville, TX 76528 -->
+                <!-- Illustrative route canvas; this does not represent live GPS coordinates. -->
                 <div class="relative w-full h-[380px] sm:h-[430px] map-grid-bg overflow-hidden select-none">
                     <svg id="delivery-map-svg" viewBox="0 0 800 500" class="w-full h-full object-cover transition-transform duration-300 ease-out origin-center">
                         <defs>
@@ -325,14 +325,14 @@
                             </filter>
                         </defs>
 
-                        <!-- Leon River (Gatesville, TX waterway) -->
+                        <!-- Decorative route background -->
                         <path d="M 520,0 Q 560,130 510,230 T 575,410 L 610,500 L 570,500 Q 535,410 475,230 T 485,0 Z" fill="#dbeafe" opacity="0.85"/>
 
-                        <!-- Parks / Coryell County Green Spaces -->
+                        <!-- Decorative green spaces -->
                         <rect x="85" y="65" width="120" height="75" rx="18" fill="#dcfce7" opacity="0.75"/>
                         <rect x="615" y="135" width="125" height="85" rx="20" fill="#dcfce7" opacity="0.75"/>
 
-                        <!-- Local Gatesville Streets (Northern Ave, Main St, TX-36) -->
+                        <!-- Decorative local roads -->
                         <g stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none">
                             <path d="M 50,115 L 430,115 L 510,210" />
                             <path d="M 160,30 L 160,350" />
@@ -341,13 +341,13 @@
                             <path d="M 665,180 L 665,420" />
                         </g>
 
-                        <!-- US-84 Highway Arterial -->
+                        <!-- Decorative highway -->
                         <path d="M 55,235 C 185,235 270,165 390,190 C 495,212 535,315 700,295" stroke="#ffffff" stroke-width="16" stroke-linecap="round" fill="none"/>
 
                         <!-- Highway Label Pill -->
                         <g transform="translate(245, 165)">
                             <rect width="54" height="20" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
-                            <text x="27" y="14" text-anchor="middle" fill="#475569" font-size="10" font-family="Inter, sans-serif" font-weight="700">US-84 W</text>
+                            <text x="27" y="14" text-anchor="middle" fill="#475569" font-size="10" font-family="Inter, sans-serif" font-weight="700">ROUTE</text>
                         </g>
 
                         <!-- Completed Route Segment -->
@@ -359,13 +359,13 @@
                         <!-- Animated Flow Overlay -->
                         <path d="M 130,225 C 215,225 275,165 390,190 C 495,212 535,315 665,295" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 18" class="animate-dash" opacity="0.9" fill="none"/>
 
-                        <!-- Origin Pin: Waco / Central TX Hub -->
+                        <!-- Origin Pin: SwiftTrack 9901 -->
                         <g transform="translate(130, 225)">
                             <circle r="14" fill="#10b981" opacity="0.2"/>
                             <circle r="7" fill="#10b981" stroke="#ffffff" stroke-width="2.5"/>
                             <g transform="translate(-56, -38)" filter="url(#softShadow)">
                                 <rect width="112" height="26" rx="8" fill="#0f172a"/>
-                                <text x="56" y="17" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter, sans-serif" font-weight="600">Central TX Hub</text>
+                                <text x="56" y="17" text-anchor="middle" fill="#ffffff" font-size="11" font-family="Inter, sans-serif" font-weight="600">SwiftTrack 9901</text>
                             </g>
                         </g>
 
@@ -455,10 +455,10 @@
                 </button>
             </div>
             <p class="text-sm text-slate-600 leading-relaxed">
-                Need assistance with shipment <span id="modal-tracking-ref" class="font-mono font-semibold text-slate-900">VCG-76528-TX</span> for <span class="font-semibold text-slate-900">Lilibeth Villamor</span>?
+                Need assistance with shipment <span id="modal-tracking-ref" class="font-mono font-semibold text-slate-900">9901</span> for <span class="font-semibold text-slate-900">Lilibeth Villamor</span>?
             </p>
             <div class="space-y-2.5 pt-1">
-                <button onclick="toggleSupportModal(); showToast('Delivery verification instructions updated for Gatesville, TX.')" class="w-full text-left p-3.5 rounded-2xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50/40 transition flex items-center justify-between group">
+                <button onclick="toggleSupportModal(); showToast('Shipment route details updated for Gatesville, TX.')" class="w-full text-left p-3.5 rounded-2xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50/40 transition flex items-center justify-between group">
                     <div>
                         <p class="text-sm font-semibold text-slate-900 group-hover:text-[#E63917]">Verify Recipient ID Window</p>
                         <p class="text-xs text-slate-500">Confirm handover at 117 Northern Avenue</p>
@@ -483,7 +483,7 @@
         // ==========================================
         // 0. TRACKING SEARCH FLOW
         // ==========================================
-        const authorizedTrackingId = '1ST09936541868';
+        const authorizedTrackingId = '9901';
 
         function handleTrackSubmit(event) {
             event.preventDefault();
@@ -547,14 +547,14 @@
             {
                 id: 3,
                 title: 'Package shipped',
-                timestamp: 'Nov 14, 08:45 AM',
-                subtext: 'Departed Central TX Vault Facility',
+                timestamp: 'Nov 19, 2026',
+                subtext: 'Package shipped from SwiftTrack 9901',
                 icon: 'truck'
             },
             {
                 id: 4,
                 title: 'Out for delivery',
-                timestamp: 'En Route • Gatesville, TX',
+                timestamp: 'Pending carrier scan',
                 subtext: 'Heading to 117 Northern Avenue',
                 icon: 'navigation'
             },
@@ -593,7 +593,7 @@
                 if (isCompleted) {
                     circleClasses = 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25 ring-4 ring-white';
                     iconName = 'check';
-                    badgeHtml = `<span class="inline-block text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md mt-1">${step.id === 5 ? 'Nov 18, 2:30 PM' : step.timestamp}</span>`;
+                    badgeHtml = `<span class="inline-block text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md mt-1">${step.timestamp}</span>`;
                 } else if (isActive) {
                     circleClasses = 'bg-[#E63917] text-white shadow-lg shadow-orange-600/30 ring-4 ring-orange-100';
                     badgeHtml = `
@@ -645,7 +645,7 @@
             const stageConfigs = {
                 1: { pill: 'Order Confirmed • Manifest Logged', pos: 'translate(130, 225)' },
                 2: { pill: 'Order Processed • 3 Items Sealed', pos: 'translate(130, 225)' },
-                3: { pill: 'Package Shipped • US-84 West', pos: 'translate(295, 180)' },
+                3: { pill: 'Package Shipped • Gatesville, TX', pos: 'translate(295, 180)' },
                 4: { pill: 'Out for Delivery • Gatesville, TX', pos: 'translate(465, 218)' },
                 5: { pill: 'Delivered • Signed by Lilibeth Villamor', pos: 'translate(665, 295)' }
             };
